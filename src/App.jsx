@@ -5,6 +5,7 @@ import SignInPage from "./pages/SignInPage"
 import SignUpPage from "./pages/SignUpPage"
 import TransactionsPage from "./pages/TransactionPage"
 import { useState } from "react"
+import { LoginProvider } from "./Contexts/LoginContext.jsx"
 
 export default function App() {
 
@@ -15,14 +16,16 @@ export default function App() {
     <PagesContainer>
       <BrowserRouter>
 
-        <Routes>
+        <LoginProvider>
 
-          <Route path="/" element={<SignInPage />} />
-          <Route path="/cadastro" element={<SignUpPage />} />
-          <Route path="/home" element={<HomePage screen1={screen1} setScreen1={setScreen1} screen2={screen2} setScreen2={setScreen2} />} />
-          <Route path="/nova-transacao/:tipo" element={<TransactionsPage screen1={screen1} setScreen1={setScreen1} screen2={screen2} setScreen2={setScreen2} />} />
-        
-        </Routes>
+          <Routes>
+            <Route path="/" element={<SignInPage />} />
+            <Route path="/cadastro" element={<SignUpPage />} />
+            <Route path="/home" element={<HomePage screen1={screen1} setScreen1={setScreen1} screen2={screen2} setScreen2={setScreen2} />} />
+            <Route path="/nova-transacao/:tipo" element={<TransactionsPage screen1={screen1} setScreen1={setScreen1} screen2={screen2} setScreen2={setScreen2} />} />
+          </Routes>
+
+        </LoginProvider>
 
       </BrowserRouter>
     </PagesContainer>

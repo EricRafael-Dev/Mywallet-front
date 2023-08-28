@@ -9,7 +9,7 @@ import { useContext, React } from "react";
 
 export default function SignInPage() {
   
-  const { login, setLogin, setScreen3, setUser } = useContext(LoginContext);
+  const { login, setLogin } = useContext(LoginContext);
 
   const navigate = useNavigate();
 
@@ -28,8 +28,11 @@ export default function SignInPage() {
     .then(res => {
       
       setLogin(res.data.token);
-      setUser(res.data.nome);
-      setScreen3(true);
+
+      localStorage.setItem("token", res.data.token);
+      console.log(localStorage.getItem("token"))
+      localStorage.setItem("user", res.data.nome);
+
       navigate("/home");
 
     })
@@ -47,7 +50,7 @@ export default function SignInPage() {
       <form onSubmit={sendInfo}>
         <MyWalletLogo />
         <input placeholder="E-mail" type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input placeholder="password" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+        <input placeholder="Senha" type="password" autoComplete="new-password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         <button type="submit">Entrar</button>
 
       </form>

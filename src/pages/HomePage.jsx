@@ -8,9 +8,10 @@ import axios from "axios"
 
 export default function HomePage(props) {
 
-  const { login, transitionsList, setTransitionsList, screen3, user } = useContext(LoginContext);
-  const token = login;
+  const { login, transitionsList, setTransitionsList, user, loged, logout } = useContext(LoginContext);
   const { setScreen1, setScreen2 } = props;
+
+  loged();
 
   const navigate = useNavigate();
 
@@ -36,13 +37,7 @@ export default function HomePage(props) {
 
   useEffect(() => {
 
-    const config = {
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    }
-
-    axios.get(`${import.meta.env.VITE_API_URL}/home`, config)
+    axios.get(`${import.meta.env.VITE_API_URL}/home`)
     .then((resposta) => {
 
       setTransitionsList(resposta.data);
@@ -59,10 +54,12 @@ export default function HomePage(props) {
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, {user}</h1>
-        <BiExit />
+        <h1>Olá, {localStorage.getItem("user")}</h1>
+        <Hover>
+          <BiExit onClick={() => logout()}/>
+        </Hover>
       </Header>
-      {screen3 && !transitionsList.length && (
+      {!transitionsList.length && (
         <TransactionsContainer2>
 
           <SemRegistros>Não há registros de entrada ou saída</SemRegistros>
@@ -71,7 +68,7 @@ export default function HomePage(props) {
 
       )}
 
-      {screen3 && transitionsList.length > 0 && (
+      {transitionsList.length > 0 && (
 
         <TransactionsContainer>
 
@@ -225,4 +222,9 @@ const SemRegistros = styled.p`
   letter-spacing: 0em;
   text-align: center;
   color:#868686;
+`
+const Hover = styled.div`
+  :hover{
+    cursor: pointer;
+  }
 `

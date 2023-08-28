@@ -6,8 +6,10 @@ import { useNavigate } from "react-router-dom";
 
 export default function TransactionsPage(props) {
 
-  const { login } = useContext(LoginContext);
-  const token = login;
+  const {isLoged } = useContext(LoginContext);
+
+  isLoged();
+
   const navigate = useNavigate();
 
   const { screen1, screen2 } = props
@@ -20,11 +22,6 @@ export default function TransactionsPage(props) {
 
     const obj = {value, description}
 
-    const config = {
-      headers: {
-          Authorization: "Bearer " + token
-      }
-  }
   console.log(config)
 
     let route = "";
@@ -37,7 +34,7 @@ export default function TransactionsPage(props) {
       route = "saida";
     }
 
-    axios.post(`${import.meta.env.VITE_API_URL}/nova-transacao/${route}`, obj, config)
+    axios.post(`${import.meta.env.VITE_API_URL}/nova-transacao/${route}`, obj)
     .then(res => {
 
       if (screen1) {
