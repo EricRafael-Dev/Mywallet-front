@@ -31,6 +31,6 @@ export default function App() {
 const PagesContainer = styled.main`
   background-color: #8c11be;
   width: calc(100vw - 50px);
-  max-height: 100vh;
+  height: 100%;
   padding: 25px;
 `

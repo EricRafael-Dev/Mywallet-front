@@ -2,13 +2,15 @@ import styled from "styled-components"
 import { LoginContext } from "../Contexts/LoginContext";
 import { useContext, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function TransactionsPage(props) {
 
   const { login } = useContext(LoginContext);
-  const token = login.token;
+  const token = login;
+  const navigate = useNavigate();
 
-  const { screen1, setScreen1, screen2, setScreen2 } = props
+  const { screen1, screen2 } = props
 
   const [value, setValue] = useState('');
   const [description, setDescription] = useState('');
@@ -25,17 +27,17 @@ export default function TransactionsPage(props) {
   }
   console.log(config)
 
-    let url = "";
+    let route = "";
 
     if (screen1) {
-      url = "http://localhost:5000/nova-transacao/entrada";
+      route = "entrada";
     }
 
     if (screen2) {
-      url = "http://localhost:5000/nova-transacao/saida";
+      route = "saida";
     }
 
-    axios.post(url, obj)
+    axios.post(`${import.meta.env.VITE_API_URL}/nova-transacao/${route}`, obj, config)
     .then(res => {
 
       if (screen1) {
@@ -51,6 +53,7 @@ export default function TransactionsPage(props) {
     .catch(err => {
 
       alert('Ocorreu um problema ao salvar os seus dados, tente novamente!');
+      console.log(obj)
       console.log(err.response.data);
     });
 
@@ -73,7 +76,7 @@ export default function TransactionsPage(props) {
 
       <form onSubmit={sendInfo}>
 
-        <input placeholder="value" type="text" id="value" value={value} onChange={(e) => setValue(e.target.value)} required />
+        <input placeholder="Valor" type="text" id="value" value={value} onChange={(e) => setValue(e.target.value)} required />
         <input placeholder="Descrição" type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
 
         {screen1 && (

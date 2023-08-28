@@ -3,6 +3,7 @@ import styled from "styled-components"
 import MyWalletLogo from "../components/MyWalletLogo"
 import { useState } from "react";
 import axios from "axios";
+import dotenv from "dotenv";
 
 export default function SignUpPage() {
 
@@ -22,9 +23,8 @@ export default function SignUpPage() {
 
     if(password === confirm){
 
-      const apiUrl = "http://localhost:5000/cadastro";
 
-      axios.post(apiUrl, obj)
+      axios.post(`${import.meta.env.VITE_API_URL}/cadastros`, obj)
       .then(res => {
 
         alert('Você foi cadastrado com sucesso!')

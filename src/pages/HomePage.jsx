@@ -2,41 +2,105 @@ import styled from "styled-components"
 import { BiExit } from "react-icons/bi"
 import { AiOutlineMinusCircle, AiOutlinePlusCircle } from "react-icons/ai"
 import { useNavigate } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { LoginContext } from "../Contexts/LoginContext"
+import axios from "axios"
 
 export default function HomePage(props) {
 
+  const { login, transitionsList, setTransitionsList, screen3, user } = useContext(LoginContext);
+  const token = login;
+  const { setScreen1, setScreen2 } = props;
+
   const navigate = useNavigate();
 
-  const { screen1, setScreen1, screen2, setScreen2 } = props
+  let enterAmount = 0;
+  let outAmount = 0;
+
+  const array = transitionsList.map((obj, index) => transitionsList[transitionsList.length - 1 - index]);
+  
+  transitionsList.forEach(obj => {
+
+    if (obj.type === "entrada") {
+      enterAmount += parseFloat(obj.value);
+
+    } else if (obj.type === "saida") {
+      outAmount += parseFloat(obj.value);
+    }
+  });
+
+  const saldo = enterAmount - outAmount;
+  const totalAmount = (enterAmount - outAmount).toFixed(2).replace(".", ",");
+  const amount = totalAmount
+  console.log(transitionsList)
+
+  useEffect(() => {
+
+    const config = {
+      headers: {
+        Authorization: "Bearer " + token
+      }
+    }
+
+    axios.get(`${import.meta.env.VITE_API_URL}/home`, config)
+    .then((resposta) => {
+
+      setTransitionsList(resposta.data);
+
+    })
+    .catch((erro) => {
+
+      console.log(erro.response.data);
+
+    })
+
+  }, []);
 
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, Fulano</h1>
+        <h1>Olá, {user}</h1>
         <BiExit />
       </Header>
-      <TransactionsContainer>
-        <ul>
-          <ListItemContainer>
-            <div>
-              <span>30/11</span>
-              <strong>Almoço mãe</strong>
-            </div>
-            <Value color={"negativo"}>120,00</Value>
-          </ListItemContainer>
-          <ListItemContainer>
-            <div>
-              <span>15/11</span>
-              <strong>Salário</strong>
-            </div>
-            <Value color={"positivo"}>3000,00</Value>
-          </ListItemContainer>
-        </ul>
-        <article>
-          <strong>Saldo</strong>
-          <Value color={"positivo"}>2880,00</Value>
-        </article>
-      </TransactionsContainer>
+      {screen3 && !transitionsList.length && (
+        <TransactionsContainer2>
+
+          <SemRegistros>Não há registros de entrada ou saída</SemRegistros>
+
+        </TransactionsContainer2>
+
+      )}
+
+      {screen3 && transitionsList.length > 0 && (
+
+        <TransactionsContainer>
+
+          <Lista>
+            {array.map((transition) => (
+
+              <ListItemContainer key={transition._id}>
+                <div>
+                  <span>{transition.data}</span>
+                  <strong data-test="registry-name">{transition.description}</strong>
+                </div>
+                <Value data-test="registry-amount" color={transition.type}>{transition.value.replace(".", ",")}</Value>
+              </ListItemContainer>
+
+            )
+            )}
+          </Lista>
+
+
+          <article>
+            <strong>Saldo</strong>
+            <Value2 data-test="total-amount" total={saldo}>{amount}</Value2>
+          </article>
+
+        </TransactionsContainer>
+
+
+
+      )}
 
 
       <ButtonsContainer>
@@ -77,7 +141,7 @@ const Header = styled.header`
   color: white;
 `
 const TransactionsContainer = styled.article`
-  flex-grow: 1;
+  height:100%;
   background-color: #fff;
   color: #000;
   border-radius: 5px;
@@ -93,6 +157,19 @@ const TransactionsContainer = styled.article`
       text-transform: uppercase;
     }
   }
+`
+const TransactionsContainer2 = styled.article`
+  flex-grow: 1;
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+const Lista = styled.div`
+  overflow-y: auto;
+  height:650px;
 `
 const ButtonsContainer = styled.section`
   margin-top: 15px;
@@ -116,9 +193,16 @@ const ButtonsContainer = styled.section`
 const Value = styled.div`
   font-size: 16px;
   text-align: right;
-  color: ${(props) => (props.color === "positivo" ? "green" : "red")};
+  color: ${(props) => (props.color === "entrada" ? "green" : "red")};
 `
+const Value2 = styled.div`
+  font-size: 16px;
+  text-align: right;
+  color: ${(props) => (props.total >= 0 ? "green" : "red")};
+`
+
 const ListItemContainer = styled.li`
+  height:34.2px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -129,4 +213,16 @@ const ListItemContainer = styled.li`
     color: #c6c6c6;
     margin-right: 10px;
   }
+`
+const SemRegistros = styled.p`
+  display: flex;
+  flex-wrap:wrap;
+  width: 180px;
+  height: 46px;
+  font-family: Raleway;
+  font-size: 20px;
+  line-height: 23px;
+  letter-spacing: 0em;
+  text-align: center;
+  color:#868686;
 `
