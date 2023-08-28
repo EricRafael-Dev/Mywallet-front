@@ -73,18 +73,18 @@ export default function TransactionsPage(props) {
 
       <form onSubmit={sendInfo}>
 
-        <input placeholder="Valor" type="text" id="value" value={value} onChange={(e) => setValue(e.target.value)} required />
-        <input placeholder="Descrição" type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+        <input data-test="registry-amount-input" placeholder="Valor" type="text" id="value" value={value} onChange={(e) => setValue(e.target.value)} required />
+        <input data-test="registry-name-input" placeholder="Descrição" type="text" id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
 
         {screen1 && (
 
-          <button type="submit">Salvar entrada</button>
+          <button data-test="registry-save" type="submit">Salvar entrada</button>
 
         )}
 
         {screen2 && (
 
-          <button type="submit">Salvar saída</button>
+          <button data-test="registry-save" type="submit">Salvar saída</button>
 
         )}
 

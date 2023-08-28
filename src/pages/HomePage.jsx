@@ -54,9 +54,9 @@ export default function HomePage(props) {
   return (
     <HomeContainer>
       <Header>
-        <h1>Olá, {localStorage.getItem("user")}</h1>
+        <h1 data-test="user-name">Olá, {localStorage.getItem("user")}</h1>
         <Hover>
-          <BiExit onClick={() => logout()}/>
+          <BiExit data-test="logout" onClick={() => logout()}/>
         </Hover>
       </Header>
       {!transitionsList.length && (
@@ -102,7 +102,8 @@ export default function HomePage(props) {
 
       <ButtonsContainer>
 
-        <button onClick={() => {
+        <button data-test="new-income"
+                onClick={() => {
                 setScreen1(true);
                 setScreen2(false);
                 navigate("/nova-transacao/entrada");
@@ -111,7 +112,8 @@ export default function HomePage(props) {
           <p>Nova <br /> entrada</p>
         </button>
 
-        <button onClick={() => {
+        <button data-test="new-expense"
+                onClick={() => {
                 setScreen1(false);
                 setScreen2(true);
                 navigate("/nova-transacao/saida");
